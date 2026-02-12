@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bsoft Employee Registration</title>
+</head>
+<body>
+    <h2>Bsoft Employee Registration</h2>
+
+    <form id="employeeForm">
+        Name: <input type="text" id="name" required><br><br>
+        Role: <input type="text" id="role" required><br><br>
+        Email: <input type="email" id="email" required><br><br>
+        <button type="submit">Add Employee</button>
+    </form>
+
+    <h3>Employee List</h3>
+    <ul id="employeeList"></ul>
+
+    <script>
+        const addUrl = "http://backend:5000/add_employee";
+        const listUrl = "http://backend:5000/employees";
+
+
+        document.getElementById("employeeForm").addEventListener("submit", async function(e){
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const role = document.getElementById("role").value;
+            const email = document.getElementById("email").value;
+
+            await fetch(apiUrl, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({name, role, email})
+            });
+
+            loadEmployees();
+        });
+
+        async function loadEmployees(){
+            const res = await fetch(apiUrl);
+            const data = await res.json();
+
+            const list = document.getElementById("employeeList");
+            list.innerHTML = "";
+
+            data.forEach(emp => {
+                const li = document.createElement("li");
+                li.textContent = emp.name + " - " + emp.role + " - " + emp.email;
+                list.appendChild(li);
+            });
+        }
+
+        loadEmployees();
+    </script>
